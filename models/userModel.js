@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
-import JWT from "jsonwebwebtoken";
+import JWT from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -39,25 +39,25 @@ userSchema.pre("save", async function () {
 
     if (!this.isModified) return;
 
-    const salt = await bcrypt.getSalt(10)
+    const salt = await bcrypt.genSalt(10)
 
-    this.password = await bcrypt.hash(tis.password, salt)
+    this.password = await bcrypt.hash(this.password, salt)
 });
 
 //compare password
-userSchema.methods.comparepassword = async function (userPassword) {
+userSchema.methods.comparePassword = async function (userPassword) {
     const isMatch = await bcrypt.compare(userPassword, this.password);
 
     return isMatch;
 };
 
 //JWT Token 
-userSchema.methods.createToken = async function () {
-    return JWT.sign(
-        { userId: this._id },
-        process.env.JWT_SECRET_key, {
-        expiresIn: "Id",
+userSchema.methods.createJWT = function () {
+   const token = JWT.sign({ userId: this._id }, process.env.JWT_SECRET_KEY, {
+        expiresIn: "1d",
     });
+    
+    return token
 };
 
 const Users = mongoose.model("Users", userSchema);
