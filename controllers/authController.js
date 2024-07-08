@@ -30,7 +30,7 @@ export const register = async (req, res, next) => {
         });
 
         //user token 
-        const token = user.creatJWT();
+        const token = user.createJWT();
         res.status(201).send({
             success: true,
             message: "Account created successfully",
@@ -45,6 +45,7 @@ export const register = async (req, res, next) => {
         })
     } catch (error) {
         console.log(error);
+        res.status(404).json({ message: error.message })
     }
 };
 
@@ -57,7 +58,7 @@ export const signIn = async (req, res, next) => {
             return;
         }
         //find user by email
-        const user = await Users.findOne({ email }.select("+password"));
+        const user = await Users.findOne({ email }).select("+password");
 
         if (!user) {
             next("Invalid email or password");
@@ -73,13 +74,15 @@ export const signIn = async (req, res, next) => {
 
         user.password = undefined;
 
-        const token = user.creatJWT();
+        const token = user.createJWT();
+
         res.status(201).json({
             success: true,
             message: "Login successfully",
             user,
             token,
         });
+        
     } catch (error) {
         console.log(error);
         res.status(404).json({ message: error.message });
