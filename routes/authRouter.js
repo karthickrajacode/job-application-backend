@@ -1,6 +1,6 @@
 import express from "express";
 import { rateLimit } from "express-rate-limit";
-import { register, signIn } from "../controllers/authController";
+import { register, signIn } from "../controllers/authController.js";
 
 //ip rate limit
 const limiter = rateLimit({
