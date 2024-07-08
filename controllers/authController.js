@@ -47,3 +47,42 @@ export const register = async (req, res, next) => {
         console.log(error);
     }
 };
+
+export const signIn = async (req, res, next) => {
+    const { email, password } = req.body;
+    try {
+        //validation
+        if (!email || !password) {
+            next("Please provide a user credentials")
+            return;
+        }
+        //find user by email
+        const user = await Users.findOne({ email }.select("+password"));
+
+        if (!user) {
+            next("Invalid email or password");
+            return;
+        }
+        //compare password 
+        const isMatch = await user.comparePassword(password);
+
+        if (!isMatch) {
+            next("Invalid email or password");
+            return;
+        }
+
+        user.password = undefined;
+
+        const token = user.creatJWT();
+        res.status(201).json({
+            success: true,
+            message: "Login successfully",
+            user,
+            token,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(404).json({ message: error.message });
+    }
+};
+
