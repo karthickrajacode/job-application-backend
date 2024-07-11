@@ -1,4 +1,4 @@
-import mongoose, { SchemaType } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const jobSchema = new mongoose.Schema({
     company: { type: Schema.Types.ObjectId, ref: "Companies" },
