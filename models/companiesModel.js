@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
-import JWT from "jsonwebwebtoken";
+import JWT from "jsonwebtoken";
 
 
 const companySchema = new mongoose.Schema({
@@ -25,7 +25,7 @@ const companySchema = new mongoose.Schema({
     location: { type: String },
     about: { type: String },
     profileUrl: { type: String },
-    jobPosts: [{ type: Schema.Type.ObjectId, ref: "jobs" }]
+    jobPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "jobs" }] 
 
 });
 
@@ -35,21 +35,21 @@ companySchema.pre("save", async function () {
 
     const salt = await bcrypt.genSalt(10)
 
-    this.password = await bcrypt.hash(tis.password, salt)
+    this.password = await bcrypt.hash(this.password, salt)
 });
 
 //compare password
-companySchema.methods.comparepassword = async function (userPassword) {
+companySchema.methods.comparePassword = async function (userPassword) {
     const isMatch = await bcrypt.compare(userPassword, this.password);
 
     return isMatch;
 };
 
 //JWT Token 
-companySchema.methods.createJWT = async function () {
+companySchema.methods.createJWT = function () {
     return JWT.sign(
         { userId: this._id },
-        process.env.JWT_SECRET_key, {
+        process.env.JWT_SECRET_KEY, {
         expiresIn: "1d",
     });
 };
