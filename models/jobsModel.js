@@ -11,7 +11,7 @@ const jobSchema = new mongoose.Schema({
     detail: [{ desc: { type: String }, requirements: { type: String } }],
     application: [{ type: Schema.Types.ObjectId, ref: "Users" }],
 },
-    { timesstamps: true }
+    { timestamps: true }
 );
 
 const Jobs = mongoose.model("Jobs", jobSchema);
