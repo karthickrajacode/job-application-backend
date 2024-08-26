@@ -25,7 +25,7 @@ const companySchema = new mongoose.Schema({
     location: { type: String },
     about: { type: String },
     profileUrl: { type: String },
-    jobPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Jobs" }] 
+    jobPosts: [{ type: Schema.Types.ObjectId, ref: "Jobs" }] 
 
 });
 
