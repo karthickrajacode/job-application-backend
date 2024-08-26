@@ -136,9 +136,9 @@ export const getJobPosts = async (req, res, next) => {
 
     //[2-6]
     if (exp) {
-      queryObject.experience = {
-        $gte: Number(experience[0]) - 1,
-        $lte: Number(experience[1]) + 1,
+      queryObject.experiences = {
+        $gt: Number(experience[0]) - 1,
+        $lt: Number(experience[1]) + 1,
       };
     }
 
@@ -166,7 +166,7 @@ export const getJobPosts = async (req, res, next) => {
       queryResult = queryResult.sort("-createdAt");
     }
     if (sort === "Oldest") {
-      queryResult = queryResult.sort("-createdAt");
+      queryResult = queryResult.sort("createdAt");
     }
     if (sort === "A-Z") {
       queryResult = queryResult.sort("jobTitle");
@@ -226,7 +226,7 @@ export const getJobById = async (req, res, next) => {
 
     let queryResult = Jobs.find(searchQuery)
       .populate({
-        path: "Company",
+        path: "company",
         select: "-password",
       })
       .sort({ _id: -1 });
