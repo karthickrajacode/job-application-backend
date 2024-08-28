@@ -3,57 +3,54 @@ import validator from "validator";
 import bcrypt from "bcryptjs";
 import JWT from "jsonwebtoken";
 
-
-const companySchema = new mongoose.Schema({
+const companySchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: [true, "Company Name is required"],
+      type: String,
+      required: [true, "Company Name is required"],
     },
     email: {
-        type: String,
-        required: [true, "Email is required"],
-        unique: true,
-        validate: validator.isEmail
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+      validate: validator.isEmail,
     },
     password: {
-        type: String,
-        required: [true, "Password is required "],
-        minLeangth: [6, "Password must be at least"],
-        select: true,
+      type: String,
+      required: [true, "Password is required "],
+      minLeangth: [6, "Password must be at least"],
+      select: true,
     },
     contact: { type: String },
     location: { type: String },
     about: { type: String },
     profileUrl: { type: String },
-    jobPosts: [{ type: Schema.Types.ObjectId, ref: "Jobs" }] 
-
-});
+    jobPosts: [{ type: Schema.Types.ObjectId, ref: "Jobs" }],
+  },
+  { timestamps: true }
+);
 
 companySchema.pre("save", async function () {
+  if (!this.isModified) return;
 
-    if (!this.isModified) return;
+  const salt = await bcrypt.genSalt(10);
 
-    const salt = await bcrypt.genSalt(10)
-
-    this.password = await bcrypt.hash(this.password, salt)
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 //compare password
 companySchema.methods.comparePassword = async function (userPassword) {
-    const isMatch = await bcrypt.compare(userPassword, this.password);
+  const isMatch = await bcrypt.compare(userPassword, this.password);
 
-    return isMatch;
+  return isMatch;
 };
 
-//JWT Token 
+//JWT Token
 companySchema.methods.createJWT = function () {
-    return JWT.sign(
-        { userId: this._id },
-        process.env.JWT_SECRET_KEY, {
-        expiresIn: "1d",
-    });
+  return JWT.sign({ userId: this._id }, process.env.JWT_SECRET_KEY, {
+    expiresIn: "1d",
+  });
 };
-
 
 const Companies = mongoose.model("Companies", companySchema);
 
