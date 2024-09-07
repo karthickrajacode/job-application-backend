@@ -7,6 +7,8 @@ import {
   updateApplication,
 } from "../controllers/applicationController.js";
 
+
+
 const router = express.Router();
 
 router.post("/create-application", userAuth, createApplication);
