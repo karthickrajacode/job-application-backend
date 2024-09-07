@@ -123,7 +123,7 @@ export const getJobPosts = async (req, res, next) => {
   try {
     const { search, sort, location, jtype, exp } = req.query;
     const types = jtype?.split(","); //full-time,part-time
-    const experience = exp?.split("-");//2-6
+    const experience = exp?.split("-"); //2-6
 
     let queryObject = {};
 
@@ -205,10 +205,15 @@ export const getJobById = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const job = await Jobs.findById({ _id: id }).populate({
-      path: "company",
-      select: "-password",
-    });
+    const job = await Jobs.findById({ _id: id })
+      .populate({
+        path: "company",
+        select: "-password",
+      })
+      .populate({
+        path: "application",
+        select: "-resume"
+      });
     if (!job) {
       return res.status(200).send({
         message: "Job Post Not Found",
