@@ -40,6 +40,7 @@ const applicationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
 // Create the model using the schema
 const Applications = mongoose.model("Applications", applicationSchema);
 
